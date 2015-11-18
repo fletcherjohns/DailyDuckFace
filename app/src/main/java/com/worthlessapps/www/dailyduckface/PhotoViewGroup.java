@@ -403,6 +403,7 @@ public class PhotoViewGroup extends ViewGroup {
             mScrollVelocity = -velocityY / 80000;
             mFlingThread = new FlingThread();
             mFlingThread.start();
+
             return true;
         }
 
