@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Daily Duck Face</string>
+
+    <string name="action_camera">Camera</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="title_activity_photo">Photo Activity</string>
+
+    <string name="view_tag_holder">view_holder</string>
+    <string name="view_tag_position">position</string>
+</resources>
