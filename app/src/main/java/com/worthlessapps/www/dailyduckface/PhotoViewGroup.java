@@ -112,6 +112,9 @@ public class PhotoViewGroup extends ViewGroup {
 
     private View getView(int position) {
 
+        // This is an important optimisation for an adapter view.
+        // Maintain a cache of views that have been removed and pass
+        // them to the adapter to update when you need a new one.
         View convertView;
         try {
             convertView = mViewCache.getFirst();
@@ -165,9 +168,8 @@ public class PhotoViewGroup extends ViewGroup {
 
         // Ensure this value is within bounds, may not be after a delete
         keepScrollWithinBounds();
-        boolean done = false;
-        while (!done) {
-            done = true;
+        boolean finished = true;
+        while (true) {
             // Layout begins from the centre child.
             if (getChildCount() == 0) {
                 // If there aren't any views find the position closest to mScrollPosition.
@@ -175,31 +177,31 @@ public class PhotoViewGroup extends ViewGroup {
                 // Get the view at this position and add it as a child.
                 addAndMeasureChild(getView(mFirstChildPosition), 0);
             }
+            // Check the top, remove if not visible
+            // Otherwise, check if the view above should be visible and add if so.
             if (!isVisible(mFirstChildPosition)) {
                 Log.v("", "Removing first view");
                 mViewCache.add(getChildAt(0));
                 removeViewAt(0);
                 mFirstChildPosition++;
-                done = false;
-                continue;
+                finished = false;
             } else if (mFirstChildPosition > 0 && isVisible(mFirstChildPosition - 1)) {
                 Log.v("", "Adding view above");
                 addAndMeasureChild(getView(--mFirstChildPosition), 0);
-                done = false;
+                finished = false;
             }
             if (!isVisible(mLastChildPosition)) {
                 Log.v("", "Removing last view");
                 mViewCache.add(getChildAt(getChildCount() - 1));
                 removeViewAt(getChildCount() - 1);
                 mLastChildPosition--;
-                done = false;
-                continue;
+                finished = false;
             } else if (mLastChildPosition < mAdapter.getCount() - 1 && isVisible(mLastChildPosition + 1)) {
                 Log.v("", "Adding view below");
                 addAndMeasureChild(getView(++mLastChildPosition), -1);
-                done = false;
+                finished = false;
             }
-            break;
+            if (finished) break;
         }
     }
 
